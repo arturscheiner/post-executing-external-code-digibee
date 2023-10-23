@@ -1,0 +1,281 @@
+[
+    {
+        "data": {
+            "type": "connector",
+            "name": "ssh-remote-command-connector",
+            "stepName": "connect to the external host via ssh",
+            "accountLabels": {
+                "sshAccount": "external host user's private key"
+            },
+            "params": {
+                "port": "{{ TOINT(capsule.port) }}",
+                "environmentVariables": "[]",
+                "environmentVariablesRawMode": false,
+                "host": "{{ capsule.hostname }}",
+                "failOnError": false,
+                "command": "COMMAND=\"{{ BASEENCODE(capsule.engine, \"UTF-8\") }}\"\n\nif [[ ! -z \"{{ BASEENCODE(capsule.args, \"UTF-8\") }}\" ]]; then \n    ARGS=\"{{ BASEENCODE(capsule.args, \"UTF-8\") }}\"\nelse\n    ARGS=\"$(echo | base64)\"\nfi\n\nEXT=\"{{ BASEENCODE(capsule.ext, \"UTF-8\") }}\"\nCODE=\"{{ BASEENCODE(capsule.code, \"UTF-8\") }}\"\n\nif [[ ! -z \"{{ BASEENCODE(capsule.isjson, \"UTF-8\") }}\" ]]; then \n    ISJSON=\"{{ BASEENCODE(capsule.isjson, \"UTF-8\") }}\"\nelse\n    ISJSON=\"$(echo false | base64)\"\nfi\n\nif [[ ! -z \"{{ BASEENCODE(capsule.codeargs, \"UTF-8\") }}\" ]]; then \n    CODEARGS=\"{{ BASEENCODE(capsule.codeargs, \"UTF-8\") }}\"\nelse\n    CODEARGS=\"$(echo | base64)\"\nfi\n\n./crunner/crunner $COMMAND $ARGS $EXT $CODE $ISJSON $CODEARGS",
+                "rawEnvironmentVariables": "",
+                "serverAliveInterval": 30000,
+                "stderrAsFile": false,
+                "ignoreOutput": false,
+                "username": "{{ capsule.username }}",
+                "connectTimeout": 30000,
+                "stdoutAsFile": false
+            },
+            "id": "56820b01-2ef8-40f1-82f0-8f6a5a4ef659",
+            "key": "component@connectorssh-remote-command-connector"
+        },
+        "position": {
+            "x": 188.5,
+            "y": 175
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "name": "json-generator-connector",
+            "type": "connector",
+            "stepName": "capsule output if stdout is not empty",
+            "params": {
+                "json": "{\n  \"success\": {{ message.success }},\n  \"exitCode\": {{ message.exitCode }},\n  \"stdout\": {{ message.stdout }},\n  \"stderr\": {{ message.stderr }},\n  \"return\": {{ TOJSON(message.stdout) }}\n}",
+                "failOnError": false
+            },
+            "id": "78f45b85-5c0f-440e-a197-baea819e59a3",
+            "key": "component@connectorjson-generator-connector"
+        },
+        "position": {
+            "x": 848,
+            "y": 71
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "type": "choice",
+            "stepName": "verify the value of the stdout key",
+            "when": [],
+            "otherwise": "",
+            "id": "2244ebf5-4670-4014-b204-3bf78a57c011",
+            "key": "component@choicechoice"
+        },
+        "position": {
+            "x": 354.5,
+            "y": 175
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "type": "connector",
+            "name": "log-connector",
+            "stepName": "stdout not empty",
+            "params": {
+                "logLevel": "INFO",
+                "message": "stdout {{ message.stdout }}"
+            },
+            "id": "2f98f668-34f8-4107-b434-17fc97000d65",
+            "key": "component@connectorlog-connector"
+        },
+        "position": {
+            "x": 677,
+            "y": 71
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "type": "connector",
+            "name": "log-connector",
+            "stepName": "stderr not empty",
+            "params": {
+                "logLevel": "ERROR",
+                "message": "stderr: {{ message.stderr }}"
+            },
+            "id": "5a06e565-9e66-4f40-bb93-3a808f087d35",
+            "key": "component@connectorlog-connector"
+        },
+        "position": {
+            "x": 677,
+            "y": 279
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "name": "json-generator-connector",
+            "type": "connector",
+            "stepName": "capsule output if stdout is empty and stderr is not empty",
+            "params": {
+                "json": "{\n  \"success\": {{ message.success }},\n  \"exitCode\": {{ message.exitCode }},\n  \"stdout\": {{ message.stdout }},\n  \"stderr\": {{ message.stderr }},\n  \"return\": {}\n}",
+                "failOnError": false
+            },
+            "onProcessTrack": null,
+            "onExceptionTrack": null,
+            "id": "60e4e369-145b-456e-b0ba-fa70a00e3d96",
+            "key": "component@connectorjson-generator-connector"
+        },
+        "position": {
+            "x": 848,
+            "y": 279
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+    },
+    {
+        "data": {
+            "id": "7e620712-6a87-41b4-98d4-7b891af3b0de",
+            "target": "2f98f668-34f8-4107-b434-17fc97000d65",
+            "source": "2244ebf5-4670-4014-b204-3bf78a57c011",
+            "data": {
+                "type": "choice",
+                "conditionType": "when",
+                "conditionRule": "jsonPath",
+                "condition": "$.[?(@.stdout != '')]",
+                "label": "if stdout is not empty",
+                "description": null,
+                "executionId": null
+            }
+        },
+        "position": {
+            "x": 0,
+            "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+    },
+    {
+        "data": {
+            "id": "640c478c-855d-4187-8eb5-f1eb248724cf",
+            "target": "5a06e565-9e66-4f40-bb93-3a808f087d35",
+            "source": "2244ebf5-4670-4014-b204-3bf78a57c011",
+            "data": {
+                "type": "choice",
+                "conditionType": "otherwise",
+                "conditionRule": null,
+                "condition": null,
+                "label": "if stderr is not Empty",
+                "description": null,
+                "executionId": null
+            }
+        },
+        "position": {
+            "x": 0,
+            "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+    },
+    {
+        "data": {
+            "id": "69b3e5d2-1ff0-4eb5-bd00-94cee098618d",
+            "target": "78f45b85-5c0f-440e-a197-baea819e59a3",
+            "source": "2f98f668-34f8-4107-b434-17fc97000d65",
+            "data": null
+        },
+        "position": {
+            "x": 0,
+            "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+    },
+    {
+        "data": {
+            "id": "1b8b850a-d4f6-4c9e-859e-3bd732e0d44b",
+            "target": "60e4e369-145b-456e-b0ba-fa70a00e3d96",
+            "source": "5a06e565-9e66-4f40-bb93-3a808f087d35",
+            "data": null
+        },
+        "position": {
+            "x": 0,
+            "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+    },
+    {
+        "data": {
+            "id": "242929a9-7dc2-4aba-9701-5ec6af2cd514",
+            "target": "2244ebf5-4670-4014-b204-3bf78a57c011",
+            "source": "56820b01-2ef8-40f1-82f0-8f6a5a4ef659",
+            "data": null
+        },
+        "position": {
+            "x": 0,
+            "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": true,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+    }
+]

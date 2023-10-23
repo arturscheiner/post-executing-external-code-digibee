@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "success": {
+            "type": "boolean"
+        },
+        "exitCode": {
+            "type": "integer"
+        },
+        "stdout": {
+            "type": "string"
+        },
+        "stderr": {
+            "type": "string"
+        },
+        "return": {
+            "type": "object"
+        }
+    },
+    "required": [
+        "success"
+    ]
+}

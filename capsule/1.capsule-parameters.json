@@ -1,0 +1,111 @@
+[
+    {
+        "property": "params.engine",
+        "label": "Engine",
+        "type": "string",
+        "input": "text",
+        "default": "",
+        "description": "Name of the engine binary that will be used to execute the language code. E.g. python3, go, ruby ",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.args",
+        "label": "Engine Option(s)",
+        "description": "Write here the engine arguments, needed to run your code.",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.ext",
+        "label": "Code File Extension",
+        "description": "Some languages only runs a code when its file extension is defined. A good practice here is to fill with the default file extension of the language. E.g. .py",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.codeargs",
+        "label": "Code Argument(s)",
+        "description": "If you need to pass an input to your script, write them here as you would in the command-line.",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.isjson",
+        "label": "Is the expected output of this code a JSON string?",
+        "description": "",
+        "default": "",
+        "input": "checkbox",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.code",
+        "label": "Code",
+        "type": "string",
+        "input": "code",
+        "default": "",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.hostname",
+        "label": "External Host DNS Name or IP Address",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.port",
+        "label": "External Host SSH Port",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.username",
+        "label": "External Host User",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    }
+]
