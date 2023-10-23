@@ -1,0 +1,192 @@
+{
+    "meta": {
+      "3632d839-171a-46ab-b229-fb51d86729dc": {
+        "position": {
+          "x": 178,
+          "y": 173
+        }
+      },
+      "bf7a95d7-0244-4a7e-9bbd-1150d1bba33c": {
+        "position": {
+          "x": 465,
+          "y": 41
+        }
+      },
+      "916c2a80-1a7d-4bca-88f0-f45cc074f998": {
+        "position": {
+          "x": 598,
+          "y": 41
+        }
+      },
+      "4cfc6b20-3899-46d3-ad03-4aaf08926a8c": {
+        "position": {
+          "x": 465,
+          "y": 173
+        }
+      },
+      "3af53332-a2a8-4e5b-b2a3-f3c54ba6bbb5": {
+        "position": {
+          "x": 598,
+          "y": 173
+        }
+      },
+      "a9a91366-f197-4225-bf63-37062581dfeb": {
+        "position": {
+          "x": 465,
+          "y": 305
+        }
+      },
+      "1be76dae-1dd1-43ed-9424-3b76c49baeb2": {
+        "position": {
+          "x": 598,
+          "y": 305
+        }
+      }
+    },
+    "flowSpec": {
+      "disconnected-root:f172a29a-dc9a-466e-852a-833a5fd2059c": [
+        {
+          "type": "connector",
+          "name": "parallel-execution-connector",
+          "stepName": "execute code on external host in parallel",
+          "params": {
+            "aggregationType": "COLLATE",
+            "showExecutionIds": true,
+            "reportExceptions": true,
+            "parallelExecutions": [
+              {
+                "description": "execute python code",
+                "executionId": "execute-python-code",
+                "target": "3632d839-171a-46ab-b229-fb51d86729dc:bf7a95d7-0244-4a7e-9bbd-1150d1bba33c",
+                "__documentation__": ""
+              },
+              {
+                "description": "execute go code",
+                "executionId": "execute-go-code",
+                "target": "3632d839-171a-46ab-b229-fb51d86729dc:4cfc6b20-3899-46d3-ad03-4aaf08926a8c",
+                "__documentation__": ""
+              },
+              {
+                "description": "execute ruby code",
+                "executionId": "execute-ruby-code",
+                "target": "3632d839-171a-46ab-b229-fb51d86729dc:a9a91366-f197-4225-bf63-37062581dfeb",
+                "__documentation__": ""
+              }
+            ]
+          },
+          "id": "3632d839-171a-46ab-b229-fb51d86729dc"
+        }
+      ],
+      "3632d839-171a-46ab-b229-fb51d86729dc:bf7a95d7-0244-4a7e-9bbd-1150d1bba33c": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "log info on executing python code",
+          "params": {
+            "logLevel": "INFO",
+            "message": "Info processing message {{ message.$ }}"
+          },
+          "id": "bf7a95d7-0244-4a7e-9bbd-1150d1bba33c"
+        },
+        {
+          "type": "capsule",
+          "name": "capsule-v1-demo-demo-coderunner-2.0",
+          "capsuleCollection": "demo",
+          "capsuleCollectionVersion": 1,
+          "capsule": "coderunner-2.0",
+          "capsuleVersionMajor": 2,
+          "capsuleVersionMinor": 0,
+          "stepName": "process a python hard-code on external host",
+          "params": {
+            "engine": "python3",
+            "args": "",
+            "ext": "py",
+            "codeargs": "",
+            "isjson": true,
+            "code": "import json\n\n# some JSON:\nx = '{\"message\":\"Hello World!\"}'\n\n# print the JSON message:\nprint(x)",
+            "hostname": "{{global.ahs-ssh-hostname}}",
+            "port": "{{global.ext-host-code-port}}",
+            "username": "{{global.ext-host-code-username}}"
+          },
+          "id": "916c2a80-1a7d-4bca-88f0-f45cc074f998",
+          "accountLabels": {
+            "external host user's private key": "coderunner-private-key"
+          }
+        }
+      ],
+      "3632d839-171a-46ab-b229-fb51d86729dc:4cfc6b20-3899-46d3-ad03-4aaf08926a8c": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "log info on executing go code",
+          "params": {
+            "logLevel": "INFO",
+            "message": "Info processing message {{ message.$ }}"
+          },
+          "id": "4cfc6b20-3899-46d3-ad03-4aaf08926a8c"
+        },
+        {
+          "type": "capsule",
+          "name": "capsule-v1-demo-demo-coderunner-2.0",
+          "capsuleCollection": "demo",
+          "capsuleCollectionVersion": 1,
+          "capsule": "coderunner-2.0",
+          "capsuleVersionMajor": 2,
+          "capsuleVersionMinor": 0,
+          "stepName": "process a go hard-code on an external host",
+          "params": {
+            "engine": "go",
+            "args": "run",
+            "ext": "go",
+            "codeargs": "",
+            "isjson": true,
+            "code": "package main\nimport (\n    \"fmt\"\n    \"encoding/json\"\n)\ntype Output struct {\n Message string `json:\"message\"`\n}\nfunc main() {\n    myOutput := Output{\"Hello World!\"}\n    bytes, _ := json.Marshal(myOutput)\n    fmt.Println(string(bytes))\n}",
+            "hostname": "{{global.ahs-ssh-hostname}}",
+            "port": "{{global.ext-host-code-port}}",
+            "username": "{{global.ext-host-code-username}}"
+          },
+          "id": "3af53332-a2a8-4e5b-b2a3-f3c54ba6bbb5",
+          "accountLabels": {
+            "external host user's private key": "coderunner-private-key"
+          }
+        }
+      ],
+      "3632d839-171a-46ab-b229-fb51d86729dc:a9a91366-f197-4225-bf63-37062581dfeb": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "log info on executing ruby code",
+          "params": {
+            "logLevel": "INFO",
+            "message": "Info processing message {{ message.$ }}"
+          },
+          "id": "a9a91366-f197-4225-bf63-37062581dfeb"
+        },
+        {
+          "type": "capsule",
+          "name": "capsule-v1-demo-demo-coderunner-2.0",
+          "capsuleCollection": "demo",
+          "capsuleCollectionVersion": 1,
+          "capsule": "coderunner-2.0",
+          "capsuleVersionMajor": 2,
+          "capsuleVersionMinor": 0,
+          "stepName": "process a ruby hard-code on an external host",
+          "params": {
+            "engine": "ruby",
+            "args": "",
+            "ext": "rb",
+            "codeargs": "",
+            "isjson": false,
+            "code": "puts \"Hello World!\"",
+            "hostname": "{{global.ahs-ssh-hostname}}",
+            "port": "{{global.ext-host-code-port}}",
+            "username": "{{global.ext-host-code-username}}"
+          },
+          "id": "1be76dae-1dd1-43ed-9424-3b76c49baeb2",
+          "accountLabels": {
+            "external host user's private key": "coderunner-private-key"
+          }
+        }
+      ]
+    }
+  }
