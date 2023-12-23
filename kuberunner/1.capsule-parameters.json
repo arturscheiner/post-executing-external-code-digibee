@@ -1,0 +1,172 @@
+[
+    {
+        "property": "stepName",
+        "label": "Step Name",
+        "type": "string",
+        "input": "text",
+        "default": "",
+        "validations": {
+            "type": "string",
+            "options": [
+                {
+                    "type": "required"
+                },
+                {
+                    "type": "max",
+                    "limit": 60
+                }
+            ]
+        },
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.kubeconfig",
+        "label": ".kube/config",
+        "type": "string",
+        "input": "text",
+        "default": "",
+        "description": "The config file json that will be used by kubectl to communicate with the control-plane API Server",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.command",
+        "label": "Command",
+        "type": "string",
+        "input": "text",
+        "default": "ipsum",
+        "description": "The action command and subcomands",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.resource",
+        "label": "Resource Type",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.name",
+        "label": "Resource Name",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.namespace",
+        "label": "Namespace",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.args",
+        "label": "Arguments",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.isjson",
+        "label": "Output JSON",
+        "description": "",
+        "default": "",
+        "input": "checkbox",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.yaml",
+        "label": "Yaml",
+        "description": "",
+        "default": "",
+        "input": "code",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.host",
+        "label": "Remote Host",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.port",
+        "label": "Remote Port",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.username",
+        "label": "Remote Username",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    },
+    {
+        "property": "params.prikey",
+        "label": "Private Key",
+        "description": "",
+        "default": "",
+        "input": "text",
+        "addons": {
+            "intellisense": {
+                "active": true
+            }
+        }
+    }
+]
