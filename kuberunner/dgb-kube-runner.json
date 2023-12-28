@@ -1,0 +1,369 @@
+{
+    "meta": {
+      "22777f9e-9ba2-4a34-9240-256a8d0805c8": {
+        "position": {
+          "x": 173,
+          "y": 145
+        }
+      },
+      "5e28b3a7-8fb1-4137-aed4-a72b99705422": {
+        "position": {
+          "x": 305,
+          "y": 145
+        }
+      },
+      "11ce7e13-24c9-47cf-ae15-0acd35f0ac75": {
+        "position": {
+          "x": 437,
+          "y": 145
+        }
+      },
+      "76b13657-0303-4e37-91fc-a3237c84abbb": {
+        "position": {
+          "x": 574,
+          "y": 145
+        }
+      },
+      "026019b2-dec2-40cf-955b-ebed94d14b23": {
+        "position": {
+          "x": 861,
+          "y": 213.5
+        }
+      },
+      "23be02a1-4bc0-4ae6-be34-87594e5cbb4d": {
+        "position": {
+          "x": 994,
+          "y": 213.5
+        }
+      },
+      "2fbe2de9-d161-4135-bf81-f4e9391517c9": {
+        "position": {
+          "x": 1132,
+          "y": 213.5
+        }
+      },
+      "86b2a8a0-c642-4890-8c32-3b5d48bcf420": {
+        "position": {
+          "x": 861,
+          "y": 41
+        }
+      },
+      "76c1b3aa-a544-4b8e-91f6-49b2afb6770d": {
+        "position": {
+          "x": 994,
+          "y": 41
+        }
+      },
+      "5ace6a87-10e6-4529-8620-fe0fbf25e066": {
+        "position": {
+          "x": 1132,
+          "y": 41
+        }
+      },
+      "551457d3-629b-48b4-a0dd-8c83c1f0c3b0": {
+        "position": {
+          "x": 1269,
+          "y": 41
+        }
+      },
+      "e17b276c-d676-43d0-959c-2458664f1d95": {
+        "position": {
+          "x": 1401,
+          "y": 41
+        }
+      },
+      "793c9648-8ddb-46b7-b6f7-d6afa998a6c3": {
+        "position": {
+          "x": 1583,
+          "y": 147.5
+        }
+      },
+      "5a3548ab-6d5d-4a35-8966-9d9229eccea3": {
+        "position": {
+          "x": 1715,
+          "y": 147.5
+        }
+      },
+      "b49a8572-3e22-40d2-af67-15646f232809": {
+        "position": {
+          "x": 1847,
+          "y": 147.5
+        }
+      },
+      "61095d71-e13b-437e-b8e5-9a82084b7750": {
+        "position": {
+          "x": 1583,
+          "y": 279.5
+        }
+      },
+      "f53051b5-c41d-4775-b180-3b2021ba9f82": {
+        "position": {
+          "x": 1715,
+          "y": 279.5
+        }
+      }
+    },
+    "flowSpec": {
+      "disconnected-root:d9215b3f-0b4f-4dfb-808a-150b2fe20796": [
+        {
+          "type": "session-management",
+          "stepName": "Add k8s to the Pipeline Session",
+          "operation": "PUT",
+          "sessionType": "LOCAL",
+          "scoped": false,
+          "fields": [
+            "k8s",
+            "action"
+          ],
+          "id": "22777f9e-9ba2-4a34-9240-256a8d0805c8"
+        },
+        {
+          "type": "connector",
+          "name": "object-store-connector",
+          "accountLabel": "dgb-internal-object-store-account",
+          "stepName": "K8s Deployment Status Machine Set Stand-By",
+          "params": {
+            "operation": "UPDATE",
+            "objectStore": "k8s-deploy-status",
+            "objectId": "{{ CONCAT(message.k8s.deploy-name, \"-\", message.k8s.deploy-namespace) }}",
+            "document": "{\n    $set: {\n        \"start-execution-key\": {{ metadata.execution.key }},\n        \"start-timestamp\": {{ NOW() }},\n        \"status\": \"stand-by\"\n    }\n}",
+            "unique": true,
+            "isolated": false,
+            "upsert": true,
+            "failOnError": false
+          },
+          "id": "5e28b3a7-8fb1-4137-aed4-a72b99705422"
+        },
+        {
+          "type": "session-management",
+          "stepName": "Get k8s from the Pipeline Session",
+          "operation": "GET",
+          "sessionType": "LOCAL",
+          "scoped": false,
+          "fields": [
+            "k8s",
+            "action"
+          ],
+          "id": "11ce7e13-24c9-47cf-ae15-0acd35f0ac75"
+        },
+        {
+          "type": "choice",
+          "stepName": "Choice",
+          "when": [
+            {
+              "target": "If Action is Create",
+              "jsonPath": "$.[?(@.action == 'create')]",
+              "__documentation__": ""
+            }
+          ],
+          "otherwise": "If Action is Delete",
+          "id": "76b13657-0303-4e37-91fc-a3237c84abbb"
+        }
+      ],
+      "If Action is Create": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log",
+          "params": {
+            "logLevel": "ERROR",
+            "message": "Error processing message {{ message.$.myField }}"
+          },
+          "id": "026019b2-dec2-40cf-955b-ebed94d14b23"
+        },
+        {
+          "type": "capsule",
+          "name": "capsule-v1-demo-kubernetes-kuberunner-3.0",
+          "capsuleCollection": "kubernetes",
+          "capsuleCollectionVersion": 1,
+          "capsule": "kuberunner-3.0",
+          "capsuleVersionMajor": 3,
+          "capsuleVersionMinor": 0,
+          "stepName": "Create a K8s Deploy Based on a YAML with Dyn Name & Callback",
+          "params": {
+            "kubeconfig": "",
+            "command": "{{ message.action }}",
+            "resource": "",
+            "name": "{{ message.k8s.deploy-name }}",
+            "namespace": "{{ message.k8s.deploy-namespace }}",
+            "args": "-f",
+            "isjson": true,
+            "yaml": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: {{ message.k8s.deploy-name }}\n  labels:\n    app: nginx\nspec:\n  replicas: {{ message.k8s.deploy-replicas }}\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        ports:\n        - containerPort: 80",
+            "callback": true,
+            "callback_url": "{{global.ext-callback-kube-url}}",
+            "callback_apikey": "{{global.ext-callback-kube-apikey}}",
+            "host": "{{global.ext-host-kube-hostname}}",
+            "port": "{{global.ext-host-kube-port}}",
+            "username": "{{global.ext-host-kube-username}}"
+          },
+          "id": "23be02a1-4bc0-4ae6-be34-87594e5cbb4d",
+          "accountLabels": {
+            "private key": "kuberunner-private-key"
+          }
+        },
+        {
+          "type": "choice",
+          "stepName": "Choice",
+          "when": [
+            {
+              "target": "condition-1",
+              "jsonPath": "$.[?(@.stderr != \"\")]",
+              "__documentation__": ""
+            }
+          ],
+          "otherwise": "condition-2",
+          "id": "2fbe2de9-d161-4135-bf81-f4e9391517c9"
+        }
+      ],
+      "condition-1": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log",
+          "params": {
+            "logLevel": "ERROR",
+            "message": "Error processing message {{ message.$.myField }}"
+          },
+          "id": "793c9648-8ddb-46b7-b6f7-d6afa998a6c3"
+        },
+        {
+          "type": "session-management",
+          "stepName": "Get k8s from the Pipeline Session",
+          "operation": "GET",
+          "sessionType": "LOCAL",
+          "scoped": false,
+          "fields": [
+            "k8s"
+          ],
+          "id": "5a3548ab-6d5d-4a35-8966-9d9229eccea3"
+        },
+        {
+          "type": "connector",
+          "name": "object-store-connector",
+          "accountLabel": "dgb-internal-object-store-account",
+          "stepName": "K8s Deployment Status Machine Set Deployed",
+          "params": {
+            "operation": "UPDATE",
+            "objectStore": "k8s-deploy-status",
+            "objectId": "{{ CONCAT(message.k8s.deploy-name, \"-\", message.k8s.deploy-namespace) }}",
+            "document": "{\n    $set: {\n        \"start-execution-key\": {{ metadata.execution.key }},\n        \"start-timestamp\": {{ NOW() }},\n        \"status\": \"deployed\",\n        \"message\": {{ message.stdout }}\n    }\n}",
+            "unique": true,
+            "isolated": false,
+            "upsert": true,
+            "failOnError": false
+          },
+          "id": "b49a8572-3e22-40d2-af67-15646f232809"
+        }
+      ],
+      "condition-2": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log",
+          "params": {
+            "logLevel": "ERROR",
+            "message": "Error processing message {{ message.$.myField }}"
+          },
+          "id": "61095d71-e13b-437e-b8e5-9a82084b7750"
+        },
+        {
+          "type": "connector",
+          "name": "object-store-connector",
+          "accountLabel": "dgb-internal-object-store-account",
+          "stepName": "K8s Deployment Status Machine Set Deployed",
+          "params": {
+            "operation": "UPDATE",
+            "objectStore": "k8s-deploy-status",
+            "objectId": "{{ CONCAT(message.k8s.deploy-name, \"-\", message.k8s.deploy-namespace) }}",
+            "document": "{\n    $set: {\n        \"start-execution-key\": {{ metadata.execution.key }},\n        \"start-timestamp\": {{ NOW() }},\n        \"status\": \"error\",\n        \"message\": {{ message.stderr }}\n    }\n}",
+            "unique": true,
+            "isolated": false,
+            "upsert": true,
+            "failOnError": false
+          },
+          "id": "f53051b5-c41d-4775-b180-3b2021ba9f82"
+        }
+      ],
+      "If Action is Delete": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log",
+          "params": {
+            "logLevel": "ERROR",
+            "message": "Error processing message {{ message.$.myField }}"
+          },
+          "id": "86b2a8a0-c642-4890-8c32-3b5d48bcf420"
+        },
+        {
+          "type": "capsule",
+          "name": "capsule-v1-demo-kubernetes-kuberunner-3.0",
+          "capsuleCollection": "kubernetes",
+          "capsuleCollectionVersion": 1,
+          "capsule": "kuberunner-3.0",
+          "capsuleVersionMajor": 3,
+          "capsuleVersionMinor": 0,
+          "stepName": "Delete a K8s Deploy Based on a YAML with Dyn Name & Callback",
+          "params": {
+            "kubeconfig": "",
+            "command": "{{ message.action }}",
+            "resource": "",
+            "name": "{{ message.k8s.deploy-name }}",
+            "namespace": "{{ message.k8s.deploy-namespace }}",
+            "args": "-f",
+            "isjson": false,
+            "yaml": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: {{ message.k8s.deploy-name }}\n  labels:\n    app: nginx\nspec:\n  replicas: {{ message.k8s.deploy-replicas }}\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        ports:\n        - containerPort: 80",
+            "callback": false,
+            "callback_url": "{{global.ext-callback-kube-url}}",
+            "callback_apikey": "{{global.ext-callback-kube-apikey}}",
+            "host": "{{global.ext-host-kube-hostname}}",
+            "port": "{{global.ext-host-kube-port}}",
+            "username": "{{global.ext-host-kube-username}}"
+          },
+          "id": "76c1b3aa-a544-4b8e-91f6-49b2afb6770d",
+          "accountLabels": {
+            "private key": "kuberunner-private-key"
+          }
+        },
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log",
+          "params": {
+            "logLevel": "ERROR",
+            "message": "Error processing message {{ message.$.myField }}"
+          },
+          "id": "5ace6a87-10e6-4529-8620-fe0fbf25e066"
+        },
+        {
+          "type": "session-management",
+          "stepName": "Get k8s from the Pipeline Session",
+          "operation": "GET",
+          "sessionType": "LOCAL",
+          "scoped": false,
+          "fields": [
+            "k8s",
+            "action"
+          ],
+          "id": "551457d3-629b-48b4-a0dd-8c83c1f0c3b0"
+        },
+        {
+          "type": "connector",
+          "name": "object-store-connector",
+          "accountLabel": "dgb-internal-object-store-account",
+          "stepName": "K8s Deployment Status Machine Set Deployed",
+          "params": {
+            "operation": "UPDATE",
+            "objectStore": "k8s-deploy-status",
+            "objectId": "{{ CONCAT(message.k8s.deploy-name, \"-\", message.k8s.deploy-namespace) }}",
+            "document": "{\n    $set: {\n        \"start-execution-key\": {{ metadata.execution.key }},\n        \"start-timestamp\": {{ NOW() }},\n        \"status\": \"deleted\"\n    }\n}",
+            "unique": true,
+            "isolated": false,
+            "upsert": true,
+            "failOnError": false
+          },
+          "id": "e17b276c-d676-43d0-959c-2458664f1d95"
+        }
+      ]
+    }
+  }

@@ -1,0 +1,149 @@
+{
+    "meta": {
+      "90e5c4d1-2aab-4435-aec5-c31c2164fa23": {
+        "position": {
+          "x": 173,
+          "y": 107
+        }
+      },
+      "8970c4ea-c819-4048-8bb0-ce9ce9d33fe9": {
+        "position": {
+          "x": 310,
+          "y": 107
+        }
+      },
+      "99429dca-38ca-4e6e-bc84-ff0232e60c13": {
+        "position": {
+          "x": 597,
+          "y": 41
+        }
+      },
+      "b9dce4f9-5be5-49ad-8d7e-94f21609f8db": {
+        "position": {
+          "x": 729,
+          "y": 41
+        }
+      },
+      "92ce7984-2b19-4415-a189-c776425dcd9b": {
+        "position": {
+          "x": 861,
+          "y": 41
+        }
+      },
+      "9b21e92b-fb83-45f2-a24b-0ed4b775a873": {
+        "position": {
+          "x": 597,
+          "y": 173
+        }
+      },
+      "4c748158-94ad-43f2-baac-b23d8000d639": {
+        "position": {
+          "x": 729,
+          "y": 173
+        }
+      },
+      "08d13afd-855d-441c-8bba-f1dd2b9a654b": {
+        "position": {
+          "x": 861,
+          "y": 173
+        }
+      }
+    },
+    "flowSpec": {
+      "disconnected-root:b777a00a-4049-4847-8725-2f6f075f5e68": [
+        {
+          "name": "jolt-connector-v2",
+          "type": "connector",
+          "stepName": "Convert body to k8s",
+          "params": {
+            "exprReference": false,
+            "joltExpr": "[\r  {\r    \"operation\": \"shift\",\r    \"spec\": {\r      \"body\": {\r        \"*\": \"k8s.&\"\r      },\r      \"*\": \"&\"\r    }\r  }\r]",
+            "joltExprReference": "",
+            "failOnError": false
+          },
+          "id": "90e5c4d1-2aab-4435-aec5-c31c2164fa23"
+        },
+        {
+          "type": "choice",
+          "stepName": "Choice",
+          "when": [
+            {
+              "target": "If method is POST",
+              "jsonPath": "$.[?(@.method == 'POST')]",
+              "__documentation__": ""
+            }
+          ],
+          "otherwise": "if method is DELETE",
+          "id": "8970c4ea-c819-4048-8bb0-ce9ce9d33fe9"
+        }
+      ],
+      "If method is POST": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log - POST Request",
+          "params": {
+            "logLevel": "INFO",
+            "message": "Info Creating {{ message.$ }}"
+          },
+          "id": "99429dca-38ca-4e6e-bc84-ff0232e60c13"
+        },
+        {
+          "name": "json-generator-connector",
+          "type": "connector",
+          "stepName": "Define the key action with the value create",
+          "params": {
+            "json": "{\n    \"action\": \"create\",\n    \"k8s\": {{ message.k8s }}\n}",
+            "failOnError": false
+          },
+          "id": "b9dce4f9-5be5-49ad-8d7e-94f21609f8db"
+        },
+        {
+          "type": "connector",
+          "stepName": "Send the Full Message to the Queue ks8-deploy",
+          "name": "event-publisher-connector",
+          "params": {
+            "eventName": "k8s-deploy",
+            "body": "{{ message.$ }}",
+            "showSendEventLog": false,
+            "stopOnError": false
+          },
+          "id": "92ce7984-2b19-4415-a189-c776425dcd9b"
+        }
+      ],
+      "if method is DELETE": [
+        {
+          "type": "connector",
+          "name": "log-connector",
+          "stepName": "Log - DELETE Request",
+          "params": {
+            "logLevel": "INFO",
+            "message": "Info Deleting {{ message.$ }}"
+          },
+          "id": "9b21e92b-fb83-45f2-a24b-0ed4b775a873"
+        },
+        {
+          "name": "json-generator-connector",
+          "type": "connector",
+          "stepName": "Define the key action with the value delete",
+          "params": {
+            "json": "{\n    \"action\": \"delete\",\n    \"k8s\": {{ message.k8s }}\n}",
+            "failOnError": false
+          },
+          "id": "4c748158-94ad-43f2-baac-b23d8000d639"
+        },
+        {
+          "type": "connector",
+          "stepName": "Send the Full Message to the Queue ks8-deploy",
+          "name": "event-publisher-connector",
+          "params": {
+            "eventName": "k8s-deploy",
+            "body": "{{ message.$ }}",
+            "showSendEventLog": false,
+            "stopOnError": false
+          },
+          "id": "08d13afd-855d-441c-8bba-f1dd2b9a654b"
+        }
+      ]
+    }
+  }
