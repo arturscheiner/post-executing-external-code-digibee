@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Deployment Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fff;
+        }
+        .logo {
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: left;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <!-- Replace this with your logo or content -->
+        <img src="https://media.licdn.com/dms/image/D4E0BAQGF6babjWVpFA/company-logo_200_200/0/1697462729335/godigibee_logo?e=2147483647&v=beta&t=ggBSq8B4CwkdwIjtQUQbrNT-lDVL1CZVeGr4HoDpYfA" alt="Digibee" width="100">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/247px-Kubernetes_logo_without_workmark.svg.png" alt="Kubernetes" width="100">
+    </div>
+
+    <form id="deploymentForm">
+        <h2>Kubernetes Automation with Digibee</h2>
+
+        <label for="deployName">Deploy Name:</label>
+        <input type="text" id="deployName" name="deployName" required>
+
+        <label for="deployNamespace">Deploy Namespace:</label>
+        <input type="text" id="deployNamespace" name="deployNamespace" required>
+
+        <label for="replicas">Replicas:</label>
+        <input type="number" id="replicas" name="replicas" required>
+
+        <button type="button" onclick="submitPost()">Create</button>
+        <button type="button" onclick="submitDelete()">Delete</button>
+    </form>
+
+    <div id="responseTable"></div>
+
+    <script>
+        function submitPost() {
+            submitRequest('POST');
+        }
+
+        function submitDelete() {
+            submitRequest('DELETE');
+        }
+
+        function submitRequest(method) {
+            // Get form values
+            const deployName = document.getElementById('deployName').value;
+            const deployNamespace = document.getElementById('deployNamespace').value;
+            const replicas = document.getElementById('replicas').value;
+
+            // Create JSON object
+            const formData = {
+                "deploy-name": deployName,
+                "deploy-namespace": deployNamespace,
+                "deploy-replicas": replicas
+            };
+
+            // Send JSON data to the endpoint with the specified method
+            fetch('https://test.godigibee.io/pipeline/demo/v1/api-k8s-deploy', {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ApiKey': '7bFSlps92fWn0AapJMQpcNvXuodEj7aZ'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response in a table
+                const responseTable = document.getElementById('responseTable');
+                responseTable.innerHTML = '<h3>Response:</h3>';
+                responseTable.innerHTML += '<table>';
+                for (const key in data) {
+                    responseTable.innerHTML += `<tr><th>${key}</th><td>${data[key]}</td></tr>`;
+                }
+                responseTable.innerHTML += '</table>';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+</body>
+</html>
